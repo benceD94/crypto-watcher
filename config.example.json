@@ -1,0 +1,27 @@
+{
+  "email": {
+    "from": "no-reply@crypto-alert.com",
+    "to": "TO_EMAIL_ADDRESS",
+    "subject": "Crypto Alert",
+    "dailyAlert": true
+  },
+  "watchers": [
+    {
+      "sign": "BTC",
+      "priceAlertMin": "500",
+      "priceAlertMax": "500"
+    },
+    {
+      "sign": "ETH",
+      "priceAlert": "500",
+      "priceAlertMax": "500"
+    },
+    {
+      "sign": "LTC",
+      "priceAlert": "500",
+      "priceAlertMax": "500"
+    }
+  ],
+  "shouldPrintStatus": true,
+  "shouldSendAlert": true
+}

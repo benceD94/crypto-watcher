@@ -1,4 +1,4 @@
-const api = require("termux");
+const config = require('./config.json');
 require("ansicolor").nice;
 
 Globals = {
@@ -7,12 +7,14 @@ Globals = {
     getStockPricesFromYahoo:true,
     initialCallback: null,  // Function called in the beginning
     updateValuesCallback: null, // Function called at each updated
-    cryptosOfInterest : [`BTC`, `ETH`, `LTC`],
-    stocksOfInterest: ['AAPL', 'GOOGL'],
+    cryptosOfInterest : [],
+    stocksOfInterest: [],
     updateIntervalInSeconds: 10,
     printIntervalInSeconds:5,
-    printStatus: true,
-    updateStatusBar:true,
+    alertIntervalInSeconds:5,
+    printStatus: config.shouldPrintStatus,
+    sendAlert: config.shouldSendAlert,
+    updateStatusBar: false,
     // control
     enable: true // Used for start/stop
   },
@@ -26,7 +28,8 @@ Globals = {
   intervals: {
     printInterval: null,
     coingGeckoUpdateInterval: null,
-    statusBarTextInterval: null
+    statusBarTextInterval: null,
+    alertInterval: null
   },
   logOptions: {
     ololog_configure: {
@@ -42,28 +45,7 @@ Globals = {
   priceUpdateTimestamp: 0,
 };
 
-
-var log;
-// if (api.hasTermux) {
-//   log = require("ololog").configure({
-//     // time: { yes: true, print: x => x.toLocaleString().bright.cyan + " " },
-//     locate: false,
-//     tag: true
-//   });
-// } else {
-//   log = require("log-with-statusbar")({
-//     ololog_configure: {
-//       // time: { yes: true, print: x => x.toLocaleString().bright.cyan + " " },
-//       locate: false,
-//       tag: true
-//     },
-//     initialStatusTextArray: ["Please wait..."],
-//     minVerbosity: 1, //Minimum verbosity level
-//     verbosity: 1, //Default verbosity level
-//     enableStatusBar: true
-//   });
-// }
 var exports = (module.exports = {
   Globals: Globals,
-  log: log
+  log: console
 });

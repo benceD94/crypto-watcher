@@ -104,7 +104,7 @@ function sleep(time) {
  * @param {number} decimalNumbers
  */
 function formatNumber(n, decimalNumbers = 4) {
-  return parseFloat(n.toFixed(decimalNumbers));
+  return parseFloat(n?.toFixed(decimalNumbers));
 }
 //-----------------------------------------------------------------------------
 /**

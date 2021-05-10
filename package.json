@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "ansicolor": "^1.1.93",
     "coingecko-api": "^1.0.10",
     "currency-formatter": "^1.5.8",
+    "date-fns": "^2.21.3",
     "https": "^1.0.0",
     "moment": "^2.29.1",
     "numeral": "^2.0.6",
+    "sendmail": "^1.6.1",
     "table": "^6.7.0",
     "termux": "^1.1.1"
   }

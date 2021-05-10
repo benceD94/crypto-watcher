@@ -2,8 +2,9 @@
  * stock-cryptoa-monitor: Continuously monitor cryptocurrency prices
  * Written by Ari Saif
  */
-
+ const config = require('./config.json');
  const api = require("termux");
+ const emailSender = require('./email-sender');
  require("ansicolor").nice;
  const CoinGecko = require("coingecko-api");
  const CoinGeckoClient = new CoinGecko();
@@ -218,23 +219,6 @@
  }
  //-----------------------------------------------------------------------------
  
- async function updateStatusBar() {
-   // let frames = log.getSpinners().moon.frames.concat(log.getSpinners().earth.frames);
-  //  let frames = log.getSpinners().dots.frames;
- 
-  //  statusBarText[0] =
-  //    frames[g_printStatusCounter++ % frames.length].toString().bright.green +
-  //    ` Prices as of: ` +
-  //    moment(defines.Globals.priceUpdateTimestamp).format(
-  //      `MM/DD/YYYY, h:mm:ss A`
-  //    );
-  //  var filtered = statusBarText.filter(el => {
-  //    return el != null;
-  //  });
- 
-  //  log.setStatusBarText(filtered);
- }
- 
   function claculateChanges(k) {
    let change = getChange(k);
  
@@ -418,6 +402,39 @@
      );
    }
  }
+
+/**
+ * Alert status
+ */
+async function alertStatus() {
+  keys = Object.keys(defines.Globals.cryptoPrices).concat(
+    Object.keys(defines.Globals.stockPrices)
+  );
+  const alertMessages = [];
+  for (let i = 0; i < keys.length && defines.Globals.options.enable; i++) {
+    const k = keys[i];
+    // if (!defines.Globals.options.cryptosOfInterest.includes(k.toLowerCase())) {
+    //   continue;
+    // }
+    cmcPrice = getPrice(k);
+
+    let cmcPriceFormatted =
+      cmcPrice <= 0 ? "N/A".yellow : utility_functions.formatPrice(cmcPrice);
+
+    const currentKConfig = config.watchers.filter(kConfig => kConfig.sign === k)[0];
+    if (cmcPrice <= currentKConfig.priceAlertMin) {
+      alertMessages.push(`<tr><td><b>${k}</b> is under your set minimum of ${currentKConfig.priceAlertMin} currentyl at: <b>${cmcPriceFormatted}</b></tr>`)
+    }
+
+    if (cmcPrice >= currentKConfig.priceAlertMax) {
+      alertMessages.push(`<tr><td><b>${k}</b> is over your set maximum of ${currentKConfig.priceAlertMin} currentyl at: <b>${cmcPriceFormatted}</b></tr>`)
+    }
+  }
+
+  if (alertMessages.length) {
+    emailSender().send(alertMessages.join('\n'))
+  }
+}
  //-----------------------------------------------------------------------------
  /**
   *
@@ -445,6 +462,14 @@
      }, defines.Globals.options.printIntervalInSeconds * 1000);
    }
  
+   if (defines.Globals.options.sendAlert) {
+     defines.Globals.intervals.alertInterval = setInterval(() => {
+       if (defines.Globals.options.enable) {
+         alertStatus();
+       }
+     }, defines.Globals.options.alertIntervalInSeconds * 1000);
+   }
+ 
    defines.Globals.intervals.coingGeckoUpdateInterval = setInterval(() => {
      if (defines.Globals.options.enable) {
        if (defines.Globals.options.getCoinGeckoPrices) {
@@ -457,15 +482,6 @@
      }
    }, defines.Globals.options.updateIntervalInSeconds * 1000);
  
-   if (!api.hasTermux && defines.Globals.options.updateStatusBar) {
-     updateStatusBar();
-     defines.Globals.intervals.statusBarTextInterval = setInterval(() => {
-       if (defines.Globals.options.enable) {
-         updateStatusBar();
-       }
-     }, 0.1 * 1000);
-   }
- 
    await Promise.all(promises);
  }
  
@@ -474,7 +490,6 @@
   * Start
   */
  async function start() {
-   console.log('start', defines.Globals.options.cryptosOfInterest)
    let cryptosOfInterest = defines.Globals.options.cryptosOfInterest.map(e => {
      return e.toUpperCase();
    });
