@@ -23,5 +23,6 @@
     }
   ],
   "shouldPrintStatus": true,
-  "shouldSendAlert": true
+  "shouldSendAlert": true,
+  "refreshIntervalInSeconds": 10
 }

@@ -9,9 +9,9 @@ Globals = {
     updateValuesCallback: null, // Function called at each updated
     cryptosOfInterest : [],
     stocksOfInterest: [],
-    updateIntervalInSeconds: 10,
-    printIntervalInSeconds:5,
-    alertIntervalInSeconds:5,
+    updateIntervalInSeconds: config.refreshIntervalInSeconds,
+    printIntervalInSeconds: config.refreshIntervalInSeconds,
+    alertIntervalInSeconds: config.refreshIntervalInSeconds,
     printStatus: config.shouldPrintStatus,
     sendAlert: config.shouldSendAlert,
     updateStatusBar: false,
