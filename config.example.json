@@ -5,21 +5,25 @@
     "subject": "Crypto Alert",
     "dailyAlert": true
   },
+  "telegram": {
+    "token": "TELEGRAM:TOKEN",
+    "recipient": "RECIPIENT_ID"
+  },
   "watchers": [
     {
       "sign": "BTC",
-      "priceAlertMin": "500",
-      "priceAlertMax": "500"
+      "priceAlertMin": 500,
+      "priceAlertMax": 500
     },
     {
       "sign": "ETH",
-      "priceAlert": "500",
-      "priceAlertMax": "500"
+      "priceAlertMin": 500,
+      "priceAlertMax": 500
     },
     {
       "sign": "LTC",
-      "priceAlert": "500",
-      "priceAlertMax": "500"
+      "priceAlertMin": 500,
+      "priceAlertMax": 500
     }
   ],
   "shouldPrintStatus": true,

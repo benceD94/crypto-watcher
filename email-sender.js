@@ -1,10 +1,17 @@
 const config = require('./config.json');
 const sendmail = require('sendmail')();
-const isSameDay = require('date-fns/isSameDay')
 
-let lastEmailSent = null;
+function send(content) {
+  const generatedContent = ''
 
-function callSendMail(content) {
+  content.min.forEach((obj) => {
+    generatedContent =+ `<tr><td><b>${obj.symbol}</b> is under your set minimum of ${obj.setPrice} currentyl at: <b>${obj.price}</b></tr>`;
+  })
+
+  content.max.forEach((obj) => {
+    generatedContent =+ `<tr><td><b>${obj.symbol}</b> is under your set minimum of ${obj.setPrice} currentyl at: <b>${obj.price}</b></tr>`;
+  })
+
   sendmail({
       from: config.email.from,
       to: config.email.to,
@@ -22,26 +29,6 @@ function callSendMail(content) {
       console.log(err && err.stack);
       console.dir(reply);
   });
-}
-
-function checkEmailSpam(content) {
-  if (!lastEmailSent) {
-    callSendMail(content);
-    lastEmailSent = new Date();
-  } else {
-    if(!isSameDay(lastEmailSent, new Date())) {
-      callSendMail(content);
-      lastEmailSent = new Date();
-    }
-  }
-}
-
-function send(content) {
-  if (config.email.dailyAlert) {
-    checkEmailSpam(content)
-  } else {
-    callSendMail(content)
-  }
 }
 
 module.exports = function() {

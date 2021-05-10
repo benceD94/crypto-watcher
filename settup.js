@@ -4,7 +4,7 @@
  */
  const config = require('./config.json');
  const api = require("termux");
- const emailSender = require('./email-sender');
+ const alertCheck = require('./alertCheck');
  require("ansicolor").nice;
  const CoinGecko = require("coingecko-api");
  const CoinGeckoClient = new CoinGecko();
@@ -410,7 +410,7 @@ async function alertStatus() {
   keys = Object.keys(defines.Globals.cryptoPrices).concat(
     Object.keys(defines.Globals.stockPrices)
   );
-  const alertMessages = [];
+  const alertMessages = {min: [], max: []};
   for (let i = 0; i < keys.length && defines.Globals.options.enable; i++) {
     const k = keys[i];
     // if (!defines.Globals.options.cryptosOfInterest.includes(k.toLowerCase())) {
@@ -423,16 +423,24 @@ async function alertStatus() {
 
     const currentKConfig = config.watchers.filter(kConfig => kConfig.sign === k)[0];
     if (cmcPrice <= currentKConfig.priceAlertMin) {
-      alertMessages.push(`<tr><td><b>${k}</b> is under your set minimum of ${currentKConfig.priceAlertMin} currentyl at: <b>${cmcPriceFormatted}</b></tr>`)
+      alertMessages.min.push({
+        symbol: k,
+        setPrice: currentKConfig.priceAlertMin,
+        price: cmcPriceFormatted
+      })
     }
 
     if (cmcPrice >= currentKConfig.priceAlertMax) {
-      alertMessages.push(`<tr><td><b>${k}</b> is over your set maximum of ${currentKConfig.priceAlertMin} currentyl at: <b>${cmcPriceFormatted}</b></tr>`)
+      alertMessages.max.push({
+        symbol: k,
+        setPrice: currentKConfig.priceAlertMax,
+        price: cmcPriceFormatted
+      })
     }
   }
 
-  if (alertMessages.length) {
-    emailSender().send(alertMessages.join('\n'))
+  if (alertMessages.min.length || alertMessages.max.length) {
+    alertCheck().sendAlert(alertMessages)
   }
 }
  //-----------------------------------------------------------------------------
