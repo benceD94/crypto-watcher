@@ -1,0 +1,16 @@
+{
+  "name": "crypo-watcher",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "ansicolor": "^1.1.93",
+    "coingecko-api": "^1.0.10",
+    "currency-formatter": "^1.5.8",
+    "https": "^1.0.0",
+    "moment": "^2.29.1",
+    "numeral": "^2.0.6",
+    "table": "^6.7.0",
+    "termux": "^1.1.1"
+  }
+}
